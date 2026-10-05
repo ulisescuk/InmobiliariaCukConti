@@ -23,7 +23,7 @@ namespace CukConti.Api.Controllers
             var resultado = await _autenticacionService.LoginAsync(request);
 
             if (resultado is null)
-                return Unauthorized(new { mensaje = "Email o contraseña incorrectos." });
+                return Unauthorized(new { mensaje = "Email o contraseï¿½a incorrectos." });
 
             return Ok(resultado);
         }
