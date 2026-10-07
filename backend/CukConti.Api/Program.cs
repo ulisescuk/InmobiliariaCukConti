@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -55,6 +57,10 @@ builder.Services.AddScoped<IPropiedadRepository, PropiedadRepository>();
 builder.Services.AddScoped<PropietarioService>();
 builder.Services.AddScoped<InquilinoService>();
 builder.Services.AddScoped<PropiedadService>();
+
+builder.Services.AddScoped<IContratoRepository, ContratoRepository>();
+builder.Services.AddScoped<IIndiceRepository, IndiceRepository>();
+builder.Services.AddScoped<ContratoService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
