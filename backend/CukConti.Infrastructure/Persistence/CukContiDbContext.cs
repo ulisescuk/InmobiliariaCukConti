@@ -47,6 +47,21 @@ namespace CukConti.Infrastructure.Persistence
                 .WithMany(i => i.Contratos)
                 .HasForeignKey(c => c.InquilinoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contrato>()
+                .HasIndex(c => new { c.Estado, c.ProximaActualizacion });
+
+            modelBuilder.Entity<ValorIndice>()
+                .HasIndex(v => new { v.IndiceId, v.Periodo })
+                .IsUnique();
+
+            modelBuilder.Entity<Propietario>()
+                .HasIndex(p => p.Dni)
+                .IsUnique();
+
+            modelBuilder.Entity<Inquilino>()
+                .HasIndex(i => i.Dni)
+                .IsUnique();
         }
     }
 }
