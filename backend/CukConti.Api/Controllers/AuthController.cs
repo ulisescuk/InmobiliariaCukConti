@@ -2,6 +2,7 @@ using CukConti.Application.DTOs;
 using CukConti.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CukConti.Api.Controllers
 {
@@ -18,12 +19,13 @@ namespace CukConti.Api.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
+        [EnableRateLimiting("LoginPolicy")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
             var resultado = await _autenticacionService.LoginAsync(request);
 
             if (resultado is null)
-                return Unauthorized(new { mensaje = "Email o contrase�a incorrectos." });
+                return Unauthorized(new { mensaje = "Email o contraseña incorrectos." });
 
             return Ok(resultado);
         }
