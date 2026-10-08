@@ -32,5 +32,11 @@ namespace CukConti.Domain.Entities
 
         public ICollection<Garante> Garantes { get; set; } = new List<Garante>();
         public ICollection<HistorialActualizacion> HistorialActualizaciones { get; set; } = new List<HistorialActualizacion>();
+
+        public void CalcularProximaActualizacion()
+        {
+            var fechaBase = ProximaActualizacion == default ? FechaInicio : ProximaActualizacion;
+            ProximaActualizacion = fechaBase.AddMonths(FrecuenciaMeses);
+        }
     }
 }

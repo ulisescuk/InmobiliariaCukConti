@@ -62,6 +62,13 @@ builder.Services.AddScoped<IContratoRepository, ContratoRepository>();
 builder.Services.AddScoped<IIndiceRepository, IndiceRepository>();
 builder.Services.AddScoped<ContratoService>();
 
+builder.Services.AddScoped<IValorIndiceRepository, ValorIndiceRepository>();
+builder.Services.AddScoped<SincronizacionIndicesService>();
+builder.Services.AddHttpClient<IIndiceExternoService, BcraIndiceExternoService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.bcra.gob.ar/");
+});
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services.AddAuthentication(options =>
