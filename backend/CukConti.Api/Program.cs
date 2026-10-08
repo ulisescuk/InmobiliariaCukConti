@@ -107,7 +107,18 @@ builder.Services.AddRateLimiter(options =>
         await context.HttpContext.Response.WriteAsJsonAsync(new { mensaje = "Demasiados intentos. Esperá un minuto y volvé a intentar." }, cancellationToken);
     };
 });
+var frontendUrl = builder.Configuration["FrontendUrl"]!;
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins(frontendUrl)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 var app = builder.Build();
 
 app.UseExceptionHandler(errorApp =>
@@ -137,5 +148,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
+app.UseCors("FrontendPolicy");
 
 app.Run();
