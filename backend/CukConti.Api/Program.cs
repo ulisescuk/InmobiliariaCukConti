@@ -70,6 +70,11 @@ builder.Services.AddHttpClient<IIndiceExternoService, BcraIndiceExternoService>(
     client.BaseAddress = new Uri("https://api.bcra.gob.ar/");
 });
 
+builder.Services.AddScoped<IAlertaRepository, AlertaRepository>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddScoped<AlertaService>();
+builder.Services.AddHostedService<AlertaBackgroundService>();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services.AddAuthentication(options =>
@@ -107,6 +112,7 @@ builder.Services.AddRateLimiter(options =>
         await context.HttpContext.Response.WriteAsJsonAsync(new { mensaje = "Demasiados intentos. Esperá un minuto y volvé a intentar." }, cancellationToken);
     };
 });
+
 var frontendUrl = builder.Configuration["FrontendUrl"]!;
 
 builder.Services.AddCors(options =>
@@ -119,6 +125,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
 var app = builder.Build();
 
 app.UseExceptionHandler(errorApp =>
@@ -144,10 +151,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("FrontendPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
+
 app.MapControllers();
-app.UseCors("FrontendPolicy");
 
 app.Run();

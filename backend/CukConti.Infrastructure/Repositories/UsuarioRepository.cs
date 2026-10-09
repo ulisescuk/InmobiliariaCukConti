@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CukConti.Domain.Entities;
+using CukConti.Domain.Enums;
 using CukConti.Domain.Interfaces;
 using CukConti.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +26,13 @@ namespace CukConti.Infrastructure.Repositories
         public async Task<Usuario?> ObtenerPorIdAsync(int id)
         {
             return await _context.Usuarios.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Usuario>> ListarSecretariosActivosAsync()
+        {
+            return await _context.Usuarios
+                .Where(u => u.Rol == RolUsuario.Secretario && u.Activo)
+                .ToListAsync();
         }
 
         public async Task AgregarAsync(Usuario usuario)

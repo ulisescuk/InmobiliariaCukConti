@@ -21,6 +21,9 @@ namespace CukConti.Domain.Entities
         public DateTime ProximaActualizacion { get; set; }
         public EstadoContrato Estado { get; set; } = EstadoContrato.Vigente;
 
+        public bool Alerta60DiasEnviada { get; set; }
+        public bool Alerta30DiasEnviada { get; set; }
+
         public int PropiedadId { get; set; }
         public Propiedad? Propiedad { get; set; }
 
@@ -37,6 +40,8 @@ namespace CukConti.Domain.Entities
         {
             var fechaBase = ProximaActualizacion == default ? FechaInicio : ProximaActualizacion;
             ProximaActualizacion = fechaBase.AddMonths(FrecuenciaMeses);
+            Alerta60DiasEnviada = false;
+            Alerta30DiasEnviada = false;
         }
     }
 }
