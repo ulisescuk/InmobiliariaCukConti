@@ -21,6 +21,7 @@ namespace CukConti.Infrastructure.Persistence
         public DbSet<Alerta> Alertas => Set<Alerta>();
         public DbSet<Contacto> Contactos => Set<Contacto>();
         public DbSet<RegistroCambio> RegistrosCambio => Set<RegistroCambio>();
+        public DbSet<MovimientoGeneral> MovimientosGenerales => Set<MovimientoGeneral>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

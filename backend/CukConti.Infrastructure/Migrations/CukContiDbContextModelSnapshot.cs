@@ -306,6 +306,40 @@ namespace CukConti.Infrastructure.Migrations
                     b.ToTable("Inquilinos");
                 });
 
+            modelBuilder.Entity("CukConti.Domain.Entities.MovimientoGeneral", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Concepto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("MovimientosGenerales");
+                });
+
             modelBuilder.Entity("CukConti.Domain.Entities.Pago", b =>
                 {
                     b.Property<int>("Id")
@@ -608,6 +642,17 @@ namespace CukConti.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Contrato");
+                });
+
+            modelBuilder.Entity("CukConti.Domain.Entities.MovimientoGeneral", b =>
+                {
+                    b.HasOne("CukConti.Domain.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("CukConti.Domain.Entities.Pago", b =>

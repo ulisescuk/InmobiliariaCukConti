@@ -75,6 +75,12 @@ builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<AlertaService>();
 builder.Services.AddHostedService<AlertaBackgroundService>();
 
+builder.Services.AddScoped<IPagoRepository, PagoRepository>();
+builder.Services.AddScoped<IMovimientoGeneralRepository, MovimientoGeneralRepository>();
+builder.Services.AddScoped<PagoService>();
+builder.Services.AddScoped<MovimientoGeneralService>();
+builder.Services.AddScoped<IReciboService, QuestPdfReciboService>();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services.AddAuthentication(options =>
