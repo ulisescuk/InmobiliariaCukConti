@@ -14,6 +14,8 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -80,6 +82,9 @@ builder.Services.AddScoped<IMovimientoGeneralRepository, MovimientoGeneralReposi
 builder.Services.AddScoped<PagoService>();
 builder.Services.AddScoped<MovimientoGeneralService>();
 builder.Services.AddScoped<IReciboService, QuestPdfReciboService>();
+
+builder.Services.AddScoped<IRegistroCambioRepository, RegistroCambioRepository>();
+builder.Services.AddScoped<AuditoriaService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
