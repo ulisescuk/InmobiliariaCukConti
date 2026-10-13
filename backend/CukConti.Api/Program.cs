@@ -86,6 +86,9 @@ builder.Services.AddScoped<IReciboService, QuestPdfReciboService>();
 builder.Services.AddScoped<IRegistroCambioRepository, RegistroCambioRepository>();
 builder.Services.AddScoped<AuditoriaService>();
 
+builder.Services.AddScoped<IContactoRepository, ContactoRepository>();
+builder.Services.AddScoped<ContactoService>();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services.AddAuthentication(options =>
