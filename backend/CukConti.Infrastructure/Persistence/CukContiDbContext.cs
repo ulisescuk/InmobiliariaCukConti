@@ -1,3 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using CukConti.Domain.Entities;
 
@@ -5,8 +12,13 @@ namespace CukConti.Infrastructure.Persistence
 {
     public class CukContiDbContext : DbContext
     {
-        public CukContiDbContext(DbContextOptions<CukContiDbContext> options)
-            : base(options) { }
+        private readonly IHttpContextAccessor? _httpContextAccessor;
+
+        public CukContiDbContext(DbContextOptions<CukContiDbContext> options, IHttpContextAccessor? httpContextAccessor = null)
+            : base(options)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         public DbSet<Usuario> Usuarios => Set<Usuario>();
         public DbSet<Propietario> Propietarios => Set<Propietario>();
@@ -63,6 +75,59 @@ namespace CukConti.Infrastructure.Persistence
             modelBuilder.Entity<Inquilino>()
                 .HasIndex(i => i.Dni)
                 .IsUnique();
+        }
+
+        private static readonly string[] CamposIgnorados = { "FechaCreacion" };
+
+        private int? ObtenerUsuarioActualId()
+        {
+            var valor = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return int.TryParse(valor, out var id) ? id : null;
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var usuarioId = ObtenerUsuarioActualId();
+
+            if (usuarioId is not null)
+            {
+                var registros = new List<RegistroCambio>();
+
+                foreach (var entry in ChangeTracker.Entries())
+                {
+                    if (entry.State != EntityState.Modified) continue;
+                    if (entry.Entity is not (Contrato or Pago)) continue;
+
+                    var nombreEntidad = entry.Entity.GetType().Name;
+                    var idEntidad = (int)entry.Property("Id").CurrentValue!;
+
+                    foreach (var prop in entry.Properties)
+                    {
+                        if (!prop.IsModified) continue;
+                        if (CamposIgnorados.Contains(prop.Metadata.Name)) continue;
+
+                        var valorAnterior = prop.OriginalValue?.ToString();
+                        var valorNuevo = prop.CurrentValue?.ToString();
+                        if (valorAnterior == valorNuevo) continue;
+
+                        registros.Add(new RegistroCambio
+                        {
+                            Entidad = nombreEntidad,
+                            IdEntidad = idEntidad,
+                            Campo = prop.Metadata.Name,
+                            ValorAnterior = valorAnterior,
+                            ValorNuevo = valorNuevo,
+                            Fecha = DateTime.UtcNow,
+                            UsuarioId = usuarioId.Value
+                        });
+                    }
+                }
+
+                if (registros.Count > 0)
+                    await RegistrosCambio.AddRangeAsync(registros, cancellationToken);
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
