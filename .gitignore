@@ -13,3 +13,5 @@ node_modules/
 .vs/
 .vscode/
 *.log
+appsettings.Development.json
+appsettings.Local.json
