@@ -8,5 +8,7 @@ namespace CukConti.Domain.Interfaces
     {
         Task<IEnumerable<Pago>> ListarPorContratoAsync(int contratoId);
         Task<Pago?> ObtenerConDetalleAsync(int id);
+        Task<(int Cantidad, decimal Total)> ResumenPendientesAsync();
+        Task<decimal> SumarPagadosDelMesAsync();
     }
 }

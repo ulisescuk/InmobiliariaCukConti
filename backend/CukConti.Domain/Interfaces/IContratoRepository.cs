@@ -9,5 +9,6 @@ namespace CukConti.Domain.Interfaces
         Task<Contrato?> ObtenerConDetalleAsync(int id);
         Task<IEnumerable<Contrato>> ListarConDetalleAsync();
         Task<IEnumerable<Contrato>> ListarProximosAVencerAsync(int diasAntelacion);
+        Task<int> ContarProximosAVencerEsteMesAsync();
     }
 }

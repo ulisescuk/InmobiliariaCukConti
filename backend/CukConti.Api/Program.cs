@@ -89,6 +89,8 @@ builder.Services.AddScoped<AuditoriaService>();
 builder.Services.AddScoped<IContactoRepository, ContactoRepository>();
 builder.Services.AddScoped<ContactoService>();
 
+builder.Services.AddScoped<DashboardService>();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 
 builder.Services.AddAuthentication(options =>

@@ -43,5 +43,16 @@ namespace CukConti.Infrastructure.Repositories
                 .Where(c => c.Estado != EstadoContrato.Finalizado && c.ProximaActualizacion <= fechaLimite)
                 .ToListAsync();
         }
+
+        public async Task<int> ContarProximosAVencerEsteMesAsync()
+        {
+            var hoy = DateTime.UtcNow.Date;
+            var finDeMes = new DateTime(hoy.Year, hoy.Month, DateTime.DaysInMonth(hoy.Year, hoy.Month));
+
+            return await _dbSet.CountAsync(c =>
+                c.Estado != EstadoContrato.Finalizado &&
+                c.ProximaActualizacion >= hoy &&
+                c.ProximaActualizacion <= finDeMes);
+        }
     }
 }
